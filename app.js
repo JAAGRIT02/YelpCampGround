@@ -49,7 +49,7 @@ app.get("/", (req, res) => {
 });
 
 //CRUD functionality started
-app.get("/campgrounds",validateCampground,catchAsync(async (req, res) => {
+app.get("/campgrounds",catchAsync(async (req, res) => {
     //directory for the index page
     const campgrounds = await Campground.find({});
     res.render("campgrounds/index", { campgrounds }); //index.ejs created
