@@ -120,9 +120,18 @@ app.post('/campgrounds/:id/reviews',validateReview, catchAsync(async (req, res) 
   campground.reviews.push(review);  // pushing in the reviews array
   await review.save();
   await campground.save();
-  console.log(req.body)
+  // console.log(req.body)
   res.redirect(`/campgrounds/${campground._id}`); //redirecting to the campground show page
 }))
+
+app.delete('/campgrounds/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+  const { id, reviewId } = req.params;
+  await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } }); //using pull mongoose opreator to actally target only one thing form the collection
+  await Review.findByIdAndDelete(reviewId);
+  res.redirect(`/campgrounds/${id}`);
+}))
+
+
 
 app.all("*", (req, res, next) => {
   next(new expressError("page not found", 404));

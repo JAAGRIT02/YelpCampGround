@@ -14,4 +14,16 @@ const CampgroundSchema = new Schema({       //schema for the campground
     }]
 });
 
+// deleting campground reviews when campground is deleted
+
+CampgroundSchema.post('findOneAndDelete', async function (doc) {  //mongoose middleware
+    if (doc) {
+        await Review.deleteMany({
+            _id: {
+                $in: doc.reviews
+            }
+        })
+    }
+})
+
 module.exports = mongoose.model('Campground', CampgroundSchema); //exporting the schema
