@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const reviewSchema = new Schema({
   body: String,
-  review: Number,
+  rating: Number,
 });
 
 module.exports = mongoose.model('Review',reviewSchema)
