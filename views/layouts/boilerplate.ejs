@@ -15,6 +15,7 @@
     <!--partial of navbar.ejs created -->
     <main class="container mt-5">
         <!-- connecting body of other ejs files to this boilerplate -->
+        <%- include('../partials/flash.ejs')%>
         <%- body %>
     </main>
     <%- include('../partials/footer')%>
@@ -26,28 +27,8 @@
         integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
         crossorigin="anonymous"></script>
 
-        <script>
-            // js for validation 
-        (function () {
-          'use strict'
-        
-          // Fetch all the forms we want to apply custom Bootstrap validation styles to
-          const forms = document.querySelectorAll('.validated-form')
-        
-          // Loop over them and prevent submission
-          Array.from(forms)
-            .forEach(function (form) {
-              form.addEventListener('submit', function (event) {
-                if (!form.checkValidity()) {
-                  event.preventDefault()
-                  event.stopPropagation()
-                }
-        
-                form.classList.add('was-validated')
-              }, false)
-            })
-        })()
-        </script>
-</body>
+        <script src="/javascripts/validateForms.js"></script>
+
+</body> 
 
 </html>

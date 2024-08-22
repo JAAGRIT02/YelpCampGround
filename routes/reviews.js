@@ -30,6 +30,7 @@ const validateReview = (req,res,next) =>{
     await review.save();
     await campground.save();
     // console.log(req.body)
+    req.flash('success','successfully created a review')
     res.redirect(`/campgrounds/${campground._id}`); //redirecting to the campground show page
   }))
   
@@ -37,6 +38,7 @@ const validateReview = (req,res,next) =>{
     const { id, reviewId } = req.params;
     await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } }); //using pull mongoose opreator to actally target only one thing form the collection
     await Review.findByIdAndDelete(reviewId);
+    req.flash('success','successfully deleted a review')
     res.redirect(`/campgrounds/${id}`);
   }))
   
