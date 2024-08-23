@@ -7,6 +7,7 @@ const {campgroundSchema} = require('../schemas')
 const catchAsync = require("../Utils/catchAsync");
 const expressError = require("../Utils/Express-Error");
 
+const { isLoggedIn } = require('../middleware');
 
 
 const validateCampground = (req,res,next)=>{
@@ -29,12 +30,12 @@ router.get("/",catchAsync(async (req, res) => {
 );
 
 //this route can not be after the id one because then browser will treat "new" as an id .order matters
-router.get("/new", (req, res) => {
+router.get("/new",isLoggedIn, (req, res) => {
   //directory to add new campgrounds
   res.render("campgrounds/new"); //new.ejs created
 });
 
-router.post("/",validateCampground,catchAsync(async (req, res, next) => {
+router.post("/",isLoggedIn,validateCampground,catchAsync(async (req, res, next) => {
     //post request to post data in campground
     // if (!req.body.Campground)throw new expressError("invalid campground data", 400);  //throwing error if data is incomplete (from postman as normally validator will not allow that)
     
@@ -57,7 +58,7 @@ router.get("/:id",catchAsync(async (req, res) => {
   })
 );
 
-router.get("/:id/edit",catchAsync(async (req, res) => {
+router.get("/:id/edit",isLoggedIn,catchAsync(async (req, res) => {
     //directory for editing the campground
     const campground = await Campground.findById(req.params.id);
     if(!campground){
@@ -68,7 +69,7 @@ router.get("/:id/edit",catchAsync(async (req, res) => {
   })
 );
 
-router.put("/:id",validateCampground,catchAsync(async (req, res) => {
+router.put("/:id",isLoggedIn,validateCampground,catchAsync(async (req, res) => {
     //put request to update the campground
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, {
@@ -79,7 +80,7 @@ router.put("/:id",validateCampground,catchAsync(async (req, res) => {
   })
 );
 
-router.delete("/:id",catchAsync(async (req, res) => {
+router.delete("/:id",isLoggedIn,catchAsync(async (req, res) => {
     //deleting of a particular campground
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);

@@ -8,14 +8,19 @@ const ejsMate = require("ejs-mate"); //used to make boilerplate
 const methodOverride = require("method-override");
 const { title } = require("process");
 
+const passport = require('passport')
+const LocalStrategy = require('passport-local')
+const User = require('./models/user');
+
 const catchAsync = require("./Utils/catchAsync");
 const expressError = require("./Utils/Express-Error");
 const {campgroundSchema,reviewSchema} = require('./schemas')
 const Campground = require("./models/campground"); //importing campground.js for schema
 const Review = require("./models/review");
 
-const campgrounds = require('./routes/campgrounds')
-const reviews = require('./routes/reviews')
+const campgroundRoutes = require('./routes/campgrounds')
+const reviewRoutes = require('./routes/reviews')
+const userRoutes = require('./routes/user')
 
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
@@ -41,6 +46,7 @@ app.use(express.urlencoded({ extended: true })); //used to parse when creating n
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname,'public')));
 
+
 const sessionConfig = {
   secret: 'thisshouldbeabettersecret!',
   resave: false,
@@ -51,19 +57,37 @@ const sessionConfig = {
       maxAge: 1000 * 60 * 60 * 24 * 7
   }
 }
+
 app.use(session(sessionConfig))
 app.use(flash());
 
+//passport for authentication
+app.use(passport.initialize());
+app.use(passport.session());  //should be below sessions
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());  //store in session
+passport.deserializeUser(User.deserializeUser());//unstore in session
+
 app.use((req, res, next) => {
+  console.log(req.session)
+  res.locals.currentUser = req.user;  //to get data of the current user
   res.locals.success = req.flash('success'); //for success
   res.locals.error = req.flash('error');
   next();
 })
 
+app.get('/fakeUser', async(req,res)=>{
+  const user = new User({email:'jaax@gmail.com',username:'jaax'})
+  const newUser = await User.register(user,'jaxx');  //setting password
+  res.send(newUser);
+})
+
 
 //express router
-app.use('/campgrounds',campgrounds);
-app.use('/campgrounds/:id/reviews',reviews);
+app.use('/',userRoutes);
+app.use('/campgrounds',campgroundRoutes);
+app.use('/campgrounds/:id/reviews',reviewRoutes);
 
 
 app.get("/", (req, res) => {
