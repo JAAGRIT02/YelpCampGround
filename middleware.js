@@ -27,17 +27,17 @@ module.exports.validateCampground = (req, res, next) => {
 
 module.exports.isAuthor = async (req, res, next) => {
     const { id } = req.params;
-    const campground = await Campground.findById(id);
-    if (!campground.author.equals(req.user._id)) {
+    const campground = await Campground.findById(id);     //finding campground
+    if (!campground.author.equals(req.user._id)) {        //if author is not the user then no permission
         req.flash('error', 'You do not have permission to do that!');
         return res.redirect(`/campgrounds/${id}`);
     }
     next();
 }
 
-module.exports.isReviewAuthor = async (req, res, next) => {
+module.exports.isReviewAuthor = async (req, res, next) => {  //to check the permission of the review author
     const { id, reviewId } = req.params;
-    const review = await Review.findById(reviewId);
+    const review = await Review.findById(reviewId);   //finding the review
     if (!review.author.equals(req.user._id)) {
         req.flash('error', 'You do not have permission to do that!');
         return res.redirect(`/campgrounds/${id}`);
