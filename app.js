@@ -6,38 +6,23 @@ const flash = require('connect-flash')
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate"); //used to make boilerplate
 const methodOverride = require("method-override");
-const { title } = require("process");
 
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const User = require('./models/user');
 
-const catchAsync = require("./Utils/catchAsync");
 const expressError = require("./Utils/Express-Error");
-const {campgroundSchema,reviewSchema} = require('./schemas')
-const Campground = require("./models/campground"); //importing campground.js for schema
-const Review = require("./models/review");
+
 
 const campgroundRoutes = require('./routes/campgrounds')
 const reviewRoutes = require('./routes/reviews')
-const userRoutes = require('./routes/user')
+const userRoutes = require('./routes/user');
+const dbConnect  = require("./Utils/dbConnect");
 
 
-mongoose.connect("mongodb://localhost:27017/yelp-camp", {
-  //connection with mongoose
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true,
-  useFindAndModify:false
-});
-
-const db = mongoose.connection; //  shorten up our code and to make it readable
-db.on("error", console.error.bind(console, "connection error:")); //database connection
-db.once("open", () => {
-  console.log("Database connected");
-});
 
 
+dbConnect();
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs"); //setup for ejs and views directory
 app.set("views", path.join(__dirname, "views"));
@@ -70,7 +55,7 @@ passport.serializeUser(User.serializeUser());  //store in session
 passport.deserializeUser(User.deserializeUser());//unstore in session
 
 app.use((req, res, next) => {
-  console.log(req.session)
+  // console.log(req.session)
   res.locals.currentUser = req.user;  //to get data of the current user
   res.locals.success = req.flash('success'); //for success
   res.locals.error = req.flash('error');
