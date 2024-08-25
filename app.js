@@ -20,7 +20,7 @@ const userRoutes = require('./routes/user');
 const dbConnect  = require("./Utils/dbConnect");
 
 
-
+// MVC-models views controllers
 
 dbConnect();
 app.engine("ejs", ejsMate);
