@@ -1,14 +1,20 @@
-const Campground = require("../models/campground");  //importing campground.js for schema
+const Campground = require("../models/campground"); //importing campground.js for schema
 const Review = require("../models/review");
 
 module.exports.createReview = async (req, res) => {
 	const campground = await Campground.findById(req.params.id); //finding the campground from parameters
-	const review = new Review(req.body.review); // making new review
-	review.author = req.user._id;
+	const rating = parseInt(req.body.rating);
+
+	const review = new Review({
+		rating,
+		body: req.body.body,
+		author : req.user._id  
+	}); // making new review
+	
 	campground.reviews.push(review); // pushing in the reviews array
 	await review.save();
 	await campground.save();
-	// console.log(req.body)
+
 	req.flash("success", "successfully created a review");
 	res.redirect(`/campgrounds/${campground._id}`); //redirecting to the campground show page
 };
