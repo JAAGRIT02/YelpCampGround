@@ -1,9 +1,11 @@
 <% layout('layouts/boilerplate')%>
 <!-- getting header and footer from boilerplate ,only the body is written for better code readbility -->
-<h1>All Campgrounds</h1>
-<div>
-	<a href="/campgrounds/new">Add Campground</a>
+<div class="mb-3">
+	<h1>All Campgrounds</h1>
 </div>
+<!-- <div>
+	<a href="/campgrounds/new">Add Campground</a>
+</div> -->
 <% for (let campground of campgrounds){%>
 <div class="card mb-3" >
 	<div class="row">
