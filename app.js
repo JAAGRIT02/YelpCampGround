@@ -4,6 +4,7 @@ if(process.env.NODE_ENV !== 'production'){
 // console.log(process.env.CLOUDINARY_SECRET);
 // console.log(process.env.CLOUDINARY_KEY);
 // console.log(process.env.CLOUDINARY_CLOUD_NAME);
+console.log(process.env.MONGO_URI);
 
 const express = require("express");
 const app = express();
@@ -28,8 +29,8 @@ const reviewRoutes = require('./routes/reviews')
 const userRoutes = require('./routes/user');
 const dbConnect  = require("./Utils/dbConnect");
 const { name } = require('ejs');
-
-
+const MongoStore = require('connect-mongo');
+const dbUrl= process.env.MONGO_URI || "mongodb://localhost:27017/yelp-camp";
 // MVC-models views controllers
 
 dbConnect();
@@ -87,18 +88,31 @@ app.use(
       },
   })
 );
-
+// const store = new MongoStore({
+//   url: dbUrl,
+//   secret: 'thisshouldbeabettersecret!',
+//   touchAfter: 24 * 60 * 60
+// });
+// store.on("error", function (e) {
+//   console.log("SESSION STORE ERROR", e)
+// })
+const secret=process.env.SECRET ||'thisshouldbeabettersecret!'
 
 const sessionConfig = {
   name:'session',
-  secret: 'thisshouldbeabettersecret!',
+  secret ,
   resave: false,
   saveUninitialized: true, //making away deprication warning
+  
   cookie: {
       httpOnly: true,
       expires: Date.now() + 1000 * 60 * 60 * 24 * 7,  //setting expiration date on the cookie
       maxAge: 1000 * 60 * 60 * 24 * 7
-  }
+  },
+  store: MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 3600 // time period in seconds
+  })
 }
 
 app.use(session(sessionConfig))

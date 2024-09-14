@@ -38,4 +38,5 @@ async function dbConnect() {
 	}
 }
 
+// console.log(MONGO_URI);
 module.exports = dbConnect;
