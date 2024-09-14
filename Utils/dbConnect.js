@@ -14,14 +14,14 @@ async function dbConnect() {
 	if (isConnected) return;
 
 	try {
-		console.log(process.env.MONGO_URI);
+		// console.log(process.env.MONGO_URI);
 
 		if (!MONGO_URI) throw new Error("MONGO_URI not detected");
 		const db = await mongoose.connect(MONGO_URI, {
-			useNewUrlParser: true,
-			useUnifiedTopology: true,
-			useFindAndModify: false,
-			useCreateIndex: true,
+			// useNewUrlParser: true,
+			// useUnifiedTopology: true,
+			// useFindAndModify: false,
+			// useCreateIndex: true,
 		}); // connecting to the db
 
 		if (!mongoose.models.User) mongoose.model("User", User.schema);
